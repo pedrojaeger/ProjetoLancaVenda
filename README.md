@@ -1,3 +1,16 @@
+Projeto de um sistema de controle de vendas do dia. Desenvolvido para treinar habilidades em Angular, Material, Html, Css.
+
+# Melhorias, para lembrar
+Campo valor com cifrão - ver no curso da Alura
+
+Não adicionar se os campos não estiverem todos preenchidos
+
+Funcão editar
+
+
+
+
+
 # ProjetoLancaVenda
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.5.
