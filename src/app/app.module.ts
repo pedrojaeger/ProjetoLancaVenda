@@ -1,11 +1,10 @@
-import { NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './navbar/navbar.component';
-
 
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
@@ -19,6 +18,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ExtratoComponent } from './extrato/extrato.component';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatTableModule} from '@angular/material/table';
+import { registerLocaleData } from '@angular/common';
+import localePT from '@angular/common/locales/pt';
+
+registerLocaleData(localePT, 'pt');
 
 @NgModule({
   declarations: [
@@ -42,7 +45,11 @@ import {MatTableModule} from '@angular/material/table';
     MatDividerModule,
     MatTableModule
   ],
-  providers: [],
+  providers: [
+    {provide: LOCALE_ID, useValue: 'pt'},
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL'},
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
