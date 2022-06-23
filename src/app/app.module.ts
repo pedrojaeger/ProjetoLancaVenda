@@ -20,6 +20,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatTableModule} from '@angular/material/table';
 import { registerLocaleData } from '@angular/common';
 import localePT from '@angular/common/locales/pt';
+import { ExtratoPageComponent } from './extrato-page/extrato-page.component';
 
 registerLocaleData(localePT, 'pt');
 
@@ -28,7 +29,8 @@ registerLocaleData(localePT, 'pt');
     AppComponent,
     NavbarComponent,
     VendaComponent,
-    ExtratoComponent
+    ExtratoComponent,
+    ExtratoPageComponent
   ],
   imports: [
     BrowserModule,

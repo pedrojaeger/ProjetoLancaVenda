@@ -1,10 +1,13 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ExtratoComponent } from '../extrato/extrato.component';
+import { Venda } from '../shared/model/venda.model';
+import { VendaService } from '../shared/venda.service';
 
 @Component({
   selector: 'app-venda',
@@ -14,19 +17,22 @@ import {
 export class VendaComponent implements OnInit {
 
   formVenda!: FormGroup;
-  vendas: any[] = [];
+  vendas: Venda[] = [];
   valorTotal = 0;
   updateIndex!: any
   editavel: boolean = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder,
+    private vendaService: VendaService) { }
 
   ngOnInit(): void {
     this.formVenda = this.fb.group({
       cliente: ['', Validators.required],
       valor: ['', Validators.required],
       formaPagamento: [''],
-    });
+    }, { updateOn: 'submit' });
+
+    this.vendas = this.vendaService.listarVendas();
   }
 
 
@@ -40,7 +46,8 @@ export class VendaComponent implements OnInit {
 
     this.adicionarData(venda);
 
-    this.vendas.push(this.formVenda.value);
+    this.vendaService.adicionarVenda(this.formVenda.value);
+    //this.vendas.push(this.formVenda.value);
 
     this.formVenda.reset();
 
@@ -50,21 +57,20 @@ export class VendaComponent implements OnInit {
     venda.data = new Date();
   }
 
-  editarVenda(idVendaNoArray: number, venda: any) {
+  editarVenda(idVendaNoArray: number) {
+    const venda = this.vendas[idVendaNoArray];
 
     this.formVenda.controls['cliente'].setValue(venda.cliente);
     this.formVenda.controls['valor'].setValue(venda.valor);
     this.formVenda.controls['formaPagamento'].setValue(venda.formaPagamento);
     this.updateIndex = idVendaNoArray;
 
-
     this.editavel = true;
-
   }
 
   excluirVenda(idVendaNoArray: number) {
 
-    this.valorTotal = this.valorTotal - this.vendas[idVendaNoArray].valor;
+    // this.valorTotal = this.valorTotal - this.vendas[idVendaNoArray].valor;
 
     this.vendas.splice(idVendaNoArray, 1);
   }
@@ -80,7 +86,6 @@ export class VendaComponent implements OnInit {
 
     this.formVenda.reset();
     this.editavel = false
-
   }
 
 }

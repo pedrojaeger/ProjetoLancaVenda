@@ -11,12 +11,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Valor da Venda</mat-label>
-        <input
-          matInput
-          formControlName="valor"
-          type="number"
-          placeholder="Valor da Venda"
-        />
+        <input matInput formControlName="valor" type="number" placeholder="Valor da Venda" />
       </mat-form-field>
 
       <mat-form-field appearance="fill">
@@ -29,21 +24,10 @@
         </mat-select>
       </mat-form-field>
 
-      <button
-        *ngIf="!editavel"
-        (click)="lancaVenda()"
-        mat-raised-button
-        color="primary"
-      >
+      <button *ngIf="!editavel" (click)="lancaVenda()" mat-raised-button color="primary">
         Lançar Venda
       </button>
-      <button
-        *ngIf="editavel"
-        (click)="alterarVenda()"
-        type="submit"
-        mat-raised-button
-        color="primary"
-      >
+      <button *ngIf="editavel" (click)="alterarVenda()" type="submit" mat-raised-button color="primary">
         Alterar Venda
       </button>
     </form>
@@ -53,44 +37,4 @@
 
 <mat-divider></mat-divider>
 
-<table class="tabela">
-  <thead class="tabela__cabecalho">
-    <th class="tabela__cabecalho__conteudo">Data</th>
-    <th class="tabela__cabecalho__conteudo">Cliente</th>
-    <th class="tabela__cabecalho__conteudo">Valor</th>
-    <th class="tabela__cabecalho__conteudo">Forma Pagamento</th>
-  </thead>
-
-  <tbody>
-    <tr
-      class="tabela__linha"
-      *ngFor="let venda of vendas; let idVendaNoArray = index"
-    >
-      <td class="tabela__conteudo">{{ venda.data | date: "short" }}</td>
-      <td class="tabela__conteudo">{{ venda.cliente }}</td>
-      <td class="tabela__conteudo">{{ venda.valor | currency }}</td>
-      <td class="tabela__conteudo">{{ venda.formaPagamento }}</td>
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="editarVenda(idVendaNoArray, venda)"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        color="warn"
-        (click)="excluirVenda(idVendaNoArray)"
-      >
-        <mat-icon>delete</mat-icon>
-      </button>
-    </tr>
-    <tr class="tabela__linhatotal">
-      <td class="tabela__conteudototal">TOTAL</td>
-      <td class="tabela__conteudototal">--</td>
-      <td class="tabela__conteudototal">{{ valorTotal | currency }}</td>
-      <td class="tabela__conteudototal">--</td>
-    </tr>
-  </tbody>
-</table>
-
+<app-extrato #extrato [vendas]="vendas" (onExcluirVenda)="excluirVenda($event)" (onEditarVenda)="editarVenda($event) "></app-extrato>
