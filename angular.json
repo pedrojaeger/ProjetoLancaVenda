@@ -105,6 +105,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "ProjetoLancaVenda:build:production",
+            "firebaseProject": "lanca-venda",
+            "firebaseHostingSite": "lanca-venda"
+          }
         }
       }
     }

@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "lanca-venda": {
+      "hosting": {
+        "ProjetoLancaVenda": [
+          "lanca-venda"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "lanca-venda"
+  }
+}

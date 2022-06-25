@@ -1,11 +1,9 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ExtratoComponent } from '../extrato/extrato.component';
 import { Venda } from '../shared/model/venda.model';
 import { VendaService } from '../shared/venda.service';
 
@@ -30,11 +28,16 @@ export class VendaComponent implements OnInit {
       cliente: ['', Validators.required],
       valor: ['', Validators.required],
       formaPagamento: [''],
-    }, { updateOn: 'submit' });
+    });
 
-    this.vendas = this.vendaService.listarVendas();
+    this.carregarVendas();
   }
 
+  carregarVendas() {
+    this.vendaService.listarVendas().subscribe(vendas => {
+      this.vendas = vendas
+    });
+  }
 
   lancaVenda() {
     if (this.formVenda.invalid) {
@@ -46,11 +49,10 @@ export class VendaComponent implements OnInit {
 
     this.adicionarData(venda);
 
-    this.vendaService.adicionarVenda(this.formVenda.value);
-    //this.vendas.push(this.formVenda.value);
-
-    this.formVenda.reset();
-
+    this.vendaService.adicionarVenda(this.formVenda.value).subscribe((result => {
+      this.carregarVendas();
+      this.formVenda.reset();
+    }));
   }
 
   adicionarData(venda: any) {
@@ -58,7 +60,7 @@ export class VendaComponent implements OnInit {
   }
 
   editarVenda(idVendaNoArray: number) {
-    const venda = this.vendas[idVendaNoArray];
+    const venda = { ...this.vendas[idVendaNoArray] };
 
     this.formVenda.controls['cliente'].setValue(venda.cliente);
     this.formVenda.controls['valor'].setValue(venda.valor);
@@ -69,23 +71,22 @@ export class VendaComponent implements OnInit {
   }
 
   excluirVenda(idVendaNoArray: number) {
-
-    // this.valorTotal = this.valorTotal - this.vendas[idVendaNoArray].valor;
-
-    this.vendas.splice(idVendaNoArray, 1);
+    const id = this.vendas[idVendaNoArray].id || '';
+    this.vendaService.excluirVenda(id).subscribe((result => {
+      this.carregarVendas();
+    }));
   }
 
   alterarVenda() {
-    this.valorTotal = this.valorTotal - this.vendas[this.updateIndex].valor;
+    const venda = { ...this.vendas[this.updateIndex], ...this.formVenda.getRawValue() };
 
-    this.vendas[this.updateIndex].cliente = this.formVenda.value.cliente;
-    this.vendas[this.updateIndex].valor = this.formVenda.value.valor;
-    this.vendas[this.updateIndex].formaPagamento = this.formVenda.value.formaPagamento;
+    const id = venda.id || '';
 
-    this.valorTotal = this.valorTotal + this.formVenda.value.valor
-
-    this.formVenda.reset();
-    this.editavel = false
+    this.vendaService.alterarVenda(id, venda).subscribe((result => {
+      this.carregarVendas();
+      this.formVenda.reset();
+      this.editavel = false
+    }));
   }
 
 }

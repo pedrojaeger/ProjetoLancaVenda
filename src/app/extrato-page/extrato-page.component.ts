@@ -13,7 +13,9 @@ export class ExtratoPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.vendas = this.vendaService.listarVendas();
+    this.vendaService.listarVendas().subscribe(vendas => {
+      this.vendas = vendas
+    });
   }
 
 }
