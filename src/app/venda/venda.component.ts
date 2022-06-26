@@ -1,3 +1,5 @@
+import { VendaService } from './../service/venda.service';
+import { Venda } from './../model/venda.model';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
@@ -5,6 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { ExtratoComponent } from '../extrato/extrato.component';
 
 @Component({
   selector: 'app-venda',
@@ -12,23 +15,27 @@ import {
   styleUrls: ['./venda.component.scss'],
 })
 export class VendaComponent implements OnInit {
-
   formVenda!: FormGroup;
-  vendas: any[] = [];
+  vendas: Venda[] = [];
   valorTotal = 0;
-  updateIndex!: any
+  updateIndex!: any;
   editavel: boolean = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private VendaService: VendaService) {}
 
   ngOnInit(): void {
-    this.formVenda = this.fb.group({
-      cliente: ['', Validators.required],
-      valor: ['', Validators.required],
-      formaPagamento: [''],
-    });
-  }
+    this.formVenda = this.fb.group(
+      {
+        cliente: ['', Validators.required],
+        valor: ['', Validators.required],
+        formaPagamento: [''],
+      }
+      // { updateOn: 'submit' } Problema ao lançar venda voltar mostrando erro de não preenchido,
+      // ao resolver assim, preciso clicar duas vez para lançar a venda
+    );
 
+    this.vendas = this.VendaService.listarVendas();
+  }
 
   lancaVenda() {
     if (this.formVenda.invalid) {
@@ -40,47 +47,36 @@ export class VendaComponent implements OnInit {
 
     this.adicionarData(venda);
 
-    this.vendas.push(this.formVenda.value);
+    this.VendaService.adiocionarVenda(this.formVenda.value);
 
     this.formVenda.reset();
-
   }
 
   adicionarData(venda: any) {
     venda.data = new Date();
   }
 
-  editarVenda(idVendaNoArray: number, venda: any) {
+  editarVenda(idVendaNoArray: number) {
+    const venda = this.vendas[idVendaNoArray];
 
     this.formVenda.controls['cliente'].setValue(venda.cliente);
     this.formVenda.controls['valor'].setValue(venda.valor);
     this.formVenda.controls['formaPagamento'].setValue(venda.formaPagamento);
     this.updateIndex = idVendaNoArray;
 
-
     this.editavel = true;
-
   }
 
   excluirVenda(idVendaNoArray: number) {
-
-    this.valorTotal = this.valorTotal - this.vendas[idVendaNoArray].valor;
-
     this.vendas.splice(idVendaNoArray, 1);
   }
 
   alterarVenda() {
-    this.valorTotal = this.valorTotal - this.vendas[this.updateIndex].valor;
-
     this.vendas[this.updateIndex].cliente = this.formVenda.value.cliente;
     this.vendas[this.updateIndex].valor = this.formVenda.value.valor;
     this.vendas[this.updateIndex].formaPagamento = this.formVenda.value.formaPagamento;
 
-    this.valorTotal = this.valorTotal + this.formVenda.value.valor
-
     this.formVenda.reset();
-    this.editavel = false
-
+    this.editavel = false;
   }
-
 }
